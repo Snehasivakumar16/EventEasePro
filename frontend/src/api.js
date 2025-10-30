@@ -1,7 +1,10 @@
 import axios from 'axios';
 
-const API = axios.create({
-  baseURL: 'http://localhost:5000/api', // ✅ backend port
+// Create axios instance with your Render backend base URL
+const api = axios.create({
+  baseURL:
+    import.meta.env.VITE_API_BASE_URL ||
+    'https://eventeasepro-backend.onrender.com',
 });
 
-export default API;
+export default api;
