@@ -42,7 +42,7 @@ import Booking from '../models/Booking.js';
 
 const router = express.Router();
 
-// POST /api/bookings/:id  →  Book event seats
+// ✅ POST /api/bookings/:id → Book event seats
 router.post('/:id', protect, async (req, res) => {
   try {
     if (req.user.role === 'admin') {
@@ -53,12 +53,10 @@ router.post('/:id', protect, async (req, res) => {
     if (seats <= 0)
       return res.status(400).json({ message: 'Invalid number of seats' });
 
-    // 🔒 Atomic update to prevent overbooking
+    // Atomic update to prevent overbooking
     const updatedEvent = await Event.findOneAndUpdate(
       { _id: req.params.id, availableSeats: { $gte: seats } },
-      {
-        $inc: { availableSeats: -seats, bookedSeats: seats },
-      },
+      { $inc: { availableSeats: -seats, bookedSeats: seats } },
       { new: true }
     );
 
@@ -68,7 +66,7 @@ router.post('/:id', protect, async (req, res) => {
         .json({ message: 'Event not found or not enough seats' });
 
     await Booking.create({
-      userId: req.user._id,
+      userId: req.user.id,
       eventId: req.params.id,
       seats,
     });

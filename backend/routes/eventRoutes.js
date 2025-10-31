@@ -4,18 +4,16 @@ import { protect, adminOnly } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// Get all events
+// ✅ Get all events
 router.get('/', async (req, res) => {
   const events = await Event.find();
   res.json(events);
 });
 
 // ✅ Create event (Admin)
-// Create event (Admin)
 router.post('/', protect, adminOnly, async (req, res) => {
   try {
     const { title, category, date, venue, price, totalSeats } = req.body;
-
     if (!title || !category || !date || !venue || !price || !totalSeats) {
       return res.status(400).json({ message: 'All fields are required' });
     }
@@ -33,12 +31,12 @@ router.post('/', protect, adminOnly, async (req, res) => {
 
     res.status(201).json(event);
   } catch (err) {
-    console.error('Error creating event:', err);
-    res.status(500).json({ message: 'Server error while creating event' });
+    console.error('Create event error:', err);
+    res.status(500).json({ message: 'Server error creating event' });
   }
 });
 
-// Update event (Admin)
+// ✅ Update event (Admin)
 router.put('/:id', protect, adminOnly, async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
@@ -59,7 +57,7 @@ router.put('/:id', protect, adminOnly, async (req, res) => {
   }
 });
 
-// Delete event (Admin)
+// ✅ Delete event (Admin)
 router.delete('/:id', protect, adminOnly, async (req, res) => {
   const event = await Event.findById(req.params.id);
   if (!event) return res.status(404).json({ message: 'Event not found' });
